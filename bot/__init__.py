@@ -1,0 +1,1 @@
+"""MoveToRussia autonomous lead bot."""

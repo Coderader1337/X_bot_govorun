@@ -1,0 +1,36 @@
+services:
+  twitter-bot:
+    build: .
+    container_name: movetorussia_twitter_bot
+    env_file: .env
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+    restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+
+  reply-bot:
+    build: .
+    container_name: movetorussia_reply_bot
+    env_file: .env
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+    restart: unless-stopped
+    command:
+      - python
+      - -u
+      - run_reply_bot.py
+      - --tweet-id
+      - "2090277862335238409"
+      - --db-id
+      - "2079647800636428422"
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"

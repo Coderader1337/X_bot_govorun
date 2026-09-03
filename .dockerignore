@@ -1,0 +1,12 @@
+.env
+.env_reserve.txt
+.git
+.gitignore
+.cursor
+venv
+__pycache__
+*.pyc
+logs
+data
+*.md
+generate_oauth_tokens.py
