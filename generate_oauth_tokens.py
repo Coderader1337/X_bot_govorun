@@ -5,7 +5,7 @@
 Запуск:
   python generate_oauth_tokens.py
 
-Добавьте выданные токены в .env — они нужны для run_bot.py (постинг через X API).
+Добавьте выданные токены в .env — они нужны для постинга через X API.
 """
 
 from __future__ import annotations

@@ -85,7 +85,7 @@ def main() -> None:
         print(f"Ошибка конфигурации: {exc}", file=sys.stderr)
         sys.exit(1)
 
-    log_path = config.log_file.parent / f"reply_bot_{tweet_id}.log"
+    log_path = config.logs_dir / f"reply_bot_{tweet_id}.log"
     logger = setup_logging(log_path)
 
     parent = load_parent(config, tweet_id, logger=logger)

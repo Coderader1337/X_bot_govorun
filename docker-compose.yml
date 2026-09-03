@@ -1,18 +1,4 @@
 services:
-  twitter-bot:
-    build: .
-    container_name: movetorussia_twitter_bot
-    env_file: .env
-    volumes:
-      - ./data:/app/data
-      - ./logs:/app/logs
-    restart: unless-stopped
-    logging:
-      driver: json-file
-      options:
-        max-size: "10m"
-        max-file: "5"
-
   reply-bot:
     build: .
     container_name: movetorussia_reply_bot

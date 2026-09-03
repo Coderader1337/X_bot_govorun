@@ -37,7 +37,6 @@ EXCLUDED_NAMES = {
     "logs",
     "data",
     "docs",
-    "archive",
     "agent-tools",
     "terminals",
 }

@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import json
 import logging
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
@@ -58,8 +57,7 @@ class ParentTweet:
 
 
 def reply_bot_db_path(config: Config, parent_tweet_id: str) -> Path:
-    custom = Path(config.state_db_path).parent / f"reply_bot_{parent_tweet_id}.db"
-    return custom
+    return config.data_dir / f"reply_bot_{parent_tweet_id}.db"
 
 
 def load_parent(config: Config, tweet_id: str, *, logger: logging.Logger) -> ParentTweet:

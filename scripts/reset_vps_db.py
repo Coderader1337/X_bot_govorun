@@ -1,4 +1,4 @@
-"""Dangerous: delete reply-bot / search-bot SQLite files on the VPS.
+"""Dangerous: delete reply-bot SQLite files on the VPS.
 
 Requires VPS_IP / VPS_PASS in .env and an explicit --yes flag.
 Does not restart containers. After deleting a DB the running bot will
@@ -18,7 +18,6 @@ load_dotenv(ROOT / ".env")
 
 DEFAULT_FILES = (
     "reply_bot_2079647800636428422.db",
-    "bot_state.db",
 )
 
 

@@ -1,1 +1,1 @@
-"""MoveToRussia autonomous lead bot."""
+"""MoveToRussia reply-bot."""

@@ -1,8 +1,7 @@
-"""X API: verify tweets and post mentions."""
+"""X API: load tweets and post mentions."""
 
 from __future__ import annotations
 
-import logging
 import time
 from typing import Any
 
@@ -10,7 +9,6 @@ import requests
 from requests_oauthlib import OAuth1Session
 
 from bot.config import Config
-from bot.state import Lead
 
 API_BASES = ("https://api.x.com/2", "https://api.twitter.com/2")
 POST_URLS = ("https://api.x.com/2/tweets", "https://api.twitter.com/2/tweets")
@@ -68,8 +66,6 @@ def fetch_tweet(
     extra_fields: str = "author_id,created_at,text,conversation_id",
 ) -> dict[str, Any] | None:
     """Загружает твит по ID (Bearer)."""
-    if not config.x_bearer_token:
-        raise RuntimeError("X_BEARER_TOKEN нужен для загрузки твита")
     params = {
         "tweet.fields": extra_fields,
         "expansions": "author_id",
@@ -83,57 +79,6 @@ def fetch_tweet(
     author = users.get(tweet.get("author_id"), {})
     tweet["author_username"] = author.get("username", "")
     return tweet
-
-
-def enrich_lead(config: Config, lead: Lead, *, logger: logging.Logger) -> Lead | None:
-    """Подтягивает username/text через X API и проверяет существование твита."""
-    if not config.x_bearer_token:
-        if lead.author_username and lead.tweet_text:
-            return lead
-        logger.warning(
-            "X_BEARER_TOKEN не задан — пропуск verify для %s без username/text",
-            lead.tweet_id,
-        )
-        return lead if lead.author_username else None
-
-    params = {
-        "tweet.fields": "author_id,created_at,text",
-        "expansions": "author_id",
-        "user.fields": "username",
-    }
-    try:
-        data = _bearer_get(
-            f"/tweets/{lead.tweet_id}",
-            config.x_bearer_token,
-            params=params,
-        )
-    except RuntimeError as exc:
-        logger.warning(
-            "X API verify недоступен для %s (%s) — используем данные Grok",
-            lead.tweet_id,
-            exc,
-        )
-        return lead if lead.author_username and lead.tweet_text else None
-
-    if not data or "data" not in data:
-        logger.warning("Твит %s не найден в X API", lead.tweet_id)
-        return None
-
-    tweet = data["data"]
-    users = {u["id"]: u for u in data.get("includes", {}).get("users", [])}
-    username = users.get(tweet.get("author_id"), {}).get("username") or lead.author_username
-    text = tweet.get("text") or lead.tweet_text
-    if not username:
-        return None
-
-    return Lead(
-        tweet_id=lead.tweet_id,
-        author_username=username,
-        tweet_text=text,
-        lead_reason=lead.lead_reason,
-        is_reply=lead.is_reply,
-        x_url=lead.x_url,
-    )
 
 
 def post_mention(
